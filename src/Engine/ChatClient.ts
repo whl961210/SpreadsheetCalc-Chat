@@ -6,7 +6,7 @@
  */
 
 import { MessagesContainer, MessageContainer } from "../Engine/GlobalDefinitions";
-import { PortsGlobal,LOCAL_SERVER_URL } from "../ServerDataDefinitions";
+import { PortsGlobal,LOCAL_SERVER_URL,RENDER_SERVER_URL } from "../ServerDataDefinitions";
 
 
 
@@ -79,7 +79,7 @@ class ChatClient {
      */
     getMessages(pagingToken: string = '') {
 
-        const url = `${LOCAL_SERVER_URL}:${PortsGlobal.serverPort}/messages/get/`;
+        const url = `${RENDER_SERVER_URL}/messages/get`;
         //const url = `https://pagination-demo.onrender.com/messages/get`
 
         const fetchURL = `${url}${pagingToken}`;
@@ -115,7 +115,7 @@ class ChatClient {
 
     sendMessage(message: string, user: string) {
         console.log("sentMessage()");
-        const url = `${LOCAL_SERVER_URL}:${PortsGlobal.serverPort}/message/${user}/${message}`;
+        const url = `${RENDER_SERVER_URL}/message/${user}/${message}`;
         //const url = `https://pagination-demo.onrender.com/message/${user}/${message}`
 
         fetch(url)
