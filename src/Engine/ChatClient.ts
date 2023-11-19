@@ -79,7 +79,7 @@ class ChatClient {
      */
     getMessages(pagingToken: string = '') {
 
-        const url = `${RENDER_SERVER_URL}/messages/get`;
+        const url = `${RENDER_SERVER_URL}/messages/get/`;
         //const url = `https://pagination-demo.onrender.com/messages/get`
 
         const fetchURL = `${url}${pagingToken}`;
@@ -115,6 +115,7 @@ class ChatClient {
 
     sendMessage(message: string, user: string) {
         console.log("sentMessage()");
+        console.log(this.earliestMessageID);
         const url = `${RENDER_SERVER_URL}/message/${user}/${message}`;
         //const url = `https://pagination-demo.onrender.com/message/${user}/${message}`
 
