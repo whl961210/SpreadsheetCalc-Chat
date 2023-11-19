@@ -113,7 +113,7 @@ class ChatClient {
         this.getMessages(pagingToken);
     }
 
-    sendMessage(message: string, user: string) {
+    sendMessage(user: string, message: string) {
         console.log("sentMessage()");
         console.log(this.earliestMessageID);
         const url = `${RENDER_SERVER_URL}/message/${user}/${message}`;

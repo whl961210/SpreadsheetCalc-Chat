@@ -122,7 +122,7 @@ class Database {
         }
 
         // if less than paging size then send message and "__END__"
-        if (this.messages.length <= 10 && pagingToken === "") {
+        if (this.messages.length <= 20 && pagingToken === "") {
             const result: MessagesContainer = {
                 messages: this.messages,
                 paginationToken: "__END__"
@@ -134,11 +134,11 @@ class Database {
             //
             // generate Unique ID for this user that contains the message id of the next message to be sent
             // get the ten messages to send (the last ones)
-            const messagesToSend = this.messages.slice(0, 10);
+            const messagesToSend = this.messages.slice(0, 20);
 
             // get the id of the next message in the array right now
-            const nextMessageId = this.messages[10].id;
-            const paginationToken = `__${nextMessageId.toString().padStart(10, '0')}__`;
+            const nextMessageId = this.messages[20].id;
+            const paginationToken = `__${nextMessageId.toString().padStart(20, '0')}__`;
             const result: MessagesContainer = {
                 messages: messagesToSend,
                 paginationToken: paginationToken
@@ -164,8 +164,8 @@ class Database {
 
 
 
-        const messagesToSend = this.messages.slice(nextMessageIndex, nextMessageIndex + 10);
-        if (messagesToSend.length < 10) {
+        const messagesToSend = this.messages.slice(nextMessageIndex, nextMessageIndex + 20);
+        if (messagesToSend.length < 20) {
             return {
                 messages: messagesToSend,
                 paginationToken: "__END__"
@@ -174,16 +174,16 @@ class Database {
 
         // so there were 10 messages to send.   
         // Are these 10 the last 10, if so then send "__END__" as the token
-        if (nextMessageIndex + 10 >= this.messages.length) {
+        if (nextMessageIndex + 20 >= this.messages.length) {
             return {
                 messages: messagesToSend,
                 paginationToken: "__END__"
             }
         }
 
-        nextMessageId = this.messages[nextMessageIndex + 10].id;
+        nextMessageId = this.messages[nextMessageIndex + 20].id;
         // generate Unique ID for this user that contains the message id of the next message to be sent
-        let paginationToken = `__${nextMessageId.toString().padStart(10, '0')}__`;
+        let paginationToken = `__${nextMessageId.toString().padStart(20, '0')}__`;
         // if the next message is the last one, then send "__END__" as the token
 
         const result: MessagesContainer = {
