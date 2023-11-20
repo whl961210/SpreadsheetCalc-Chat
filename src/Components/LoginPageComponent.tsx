@@ -20,6 +20,7 @@ interface LoginPageProps {
 function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element {
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [documents, setDocuments] = useState<string[]>([]);
+  const [userNameInput, setUserNameInput] = useState(window.sessionStorage.getItem('userName') || "");
 
   // SpreadSheetClient is fetching the documents from the server so we should
   // check every 1/20 of a second to see if the documents have been fetched
@@ -38,17 +39,16 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
       <input
         type="text"
         placeholder="User name"
-        defaultValue={userName}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
-            // get the text from the input
-            let userName = (event.target as HTMLInputElement).value;
-            window.sessionStorage.setItem('userName', userName);
-            // set the user name
-            setUserName(userName);
-            spreadSheetClient.userName = userName;
-          }
-        }} />
+        value={userNameInput}
+        onChange={(e) => setUserNameInput(e.target.value)}
+        />
+        <button onClick={()=>{
+          window.sessionStorage.setItem('userName', userNameInput);
+          setUserName(userNameInput);
+          spreadSheetClient.userName = userNameInput;
+        }}>
+          Login
+        </button>
     </div>
 
   }
