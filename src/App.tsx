@@ -85,10 +85,10 @@ function App() {
         {documentName === 'documents' ? (
           <LoginPageComponent spreadSheetClient={spreadSheetClient} />
         ) : (
-          <>
+          <div className='sheet-page-container'>
             <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient} />
             <ChatComponent />
-          </>
+          </div>
         )}
       </header>
     </div>

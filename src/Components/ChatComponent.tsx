@@ -60,9 +60,9 @@ function ChatComponent() {
     }
 
     return (
-        <div>
-            <h1>Chat Component</h1>
-            <button onClick={() => chatClient.getNextMessages()}>Get Messages</button>
+        <div className="chat-division">
+            <h3>Chat</h3>
+            <button onClick={() => chatClient.getNextMessages()}>More Messages</button>
             <div className="scrollable-text-view">
                 {makeFormatedMessages()}
             </div>

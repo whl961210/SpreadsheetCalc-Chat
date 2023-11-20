@@ -188,7 +188,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   }
 
   return (
-    <div>
+    <div className="spreadsheet-division">
       <Status statusString={statusString} userName={userName}></Status>
       <button onClick={returnToLoginPage}>Return to Login Page</button>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
