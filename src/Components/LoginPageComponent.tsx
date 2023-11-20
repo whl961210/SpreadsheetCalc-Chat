@@ -43,6 +43,9 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
         onChange={(e) => setUserNameInput(e.target.value)}
         />
         <button onClick={()=>{
+          if (!checkUserName()) {
+            return;
+          }
           window.sessionStorage.setItem('userName', userNameInput);
           setUserName(userNameInput);
           spreadSheetClient.userName = userNameInput;
@@ -54,12 +57,13 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
   }
 
   function checkUserName(): boolean {
-    if (userName === "") {
+    if (userNameInput === "") {
       alert("Please enter a user name");
       return false;
     }
     return true;
   }
+
   function loadDocument(documentName: string) {
     // set the document name
     spreadSheetClient.documentName = documentName;
@@ -97,6 +101,7 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
     const sheets: string[] = spreadSheetClient.getSheets();
     // make a table with the list of sheets and a button beside each one to edit the sheet
     return <div>
+      <button onClick={() => logout()}>Logout</button>
       <table>
         <thead>
           <tr className="selector-title">
@@ -121,30 +126,22 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
 
   function getLoginPanel() {
     return <div>
-      <h5 >Login Page</h5>
+      <h5>Login Page</h5>
       {getUserLogin()}
-      <button onClick={() => logout()}>Logout</button>
     </div>
   }
 
   function loginPage() {
 
-    return <table>
-
-
-      <tbody>
-        <tr>
-          <td>
-            {getLoginPanel()}
-          </td>
-          <td>
-            {buildFileSelector()}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-
+    if (userName === "") {
+      return <div>
+        {getLoginPanel()}
+      </div>
+    } else {
+      return <div>
+        {buildFileSelector()}
+      </div>
+    }
   }
 
 
