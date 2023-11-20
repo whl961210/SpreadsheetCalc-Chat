@@ -89,24 +89,17 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
 
 
   function buildFileSelector() {
-    if (userName === "") {
-      return <div>
-        <h4>Please enter a user name</h4>
-        <br />
-        You must be logged in to<br />
-        access the documents!
-      </div>;
-    }
 
     const sheets: string[] = spreadSheetClient.getSheets();
     // make a table with the list of sheets and a button beside each one to edit the sheet
-    return <div>
+    return <>
+      <h2>Welcome! {userName}!</h2>
       <button onClick={() => logout()}>Logout</button>
       <table>
         <thead>
           <tr className="selector-title">
-            <th>Document Name---</th>
-            <th>Actions</th>
+            <th>Choose a</th>
+            <th>file</th>
 
           </tr>
         </thead>
@@ -121,7 +114,7 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
           })}
         </tbody>
       </table>
-    </div >
+    </>
   }
 
   function getLoginPanel() {
