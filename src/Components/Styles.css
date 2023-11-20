@@ -4,9 +4,10 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
-    border: 1px solid #79c50f;
+    border: 1px solid #0f5bc5;
     margin-top: 10px;
     margin-bottom: 10px;
+    background-color: aliceblue;
 }
 
 .scrollable-text-view textarea {
