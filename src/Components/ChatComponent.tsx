@@ -16,12 +16,12 @@ const chatClient = new ChatClient();
 function ChatComponent() {
     const [messages, setMessages] = useState<MessageContainer[]>([]);
     const [mostRecentId, setMostRecentId] = useState<number>(0);
-    const [user, setUser] = useState<string>("Jose");
-    const [message, setMessage] = useState<string>("Hello World");
+    const [localUser, setLocalUser] = useState(window.sessionStorage.getItem('userName') || "");
+    const [message, setMessage] = useState<string>("Enter message here");
     const bottomRef = useRef(null);
 
 
-    let localUser = user;
+    const user = window.sessionStorage.getItem('userName');
     let localMessage = message;
     const updateDisplay = useCallback(() => {
         let updateNeeded = false;
@@ -69,10 +69,9 @@ function ChatComponent() {
             <input
                 type="text"
                 id="user"
-                placeholder={user}
-                onKeyUp={(event) => {
-                    localUser = event.currentTarget.value;
-                    setUser(localUser);
+                value={localUser}
+                onChange={(e)=>{
+                    setLocalUser(e.target.value);
                 }}
             />
             <input
@@ -91,7 +90,13 @@ function ChatComponent() {
                 }}
             />
 
-            <button onClick={() => chatClient.sendMessage(localUser, localMessage)}>Send</button>
+            <button onClick={() => {
+                if (localUser !== user) {
+                    alert(`You must use your real user name: ${user}!`);
+                    return;
+                }
+                chatClient.sendMessage(localUser, localMessage)
+                }}>Send</button>
         </div>
     );
 }
