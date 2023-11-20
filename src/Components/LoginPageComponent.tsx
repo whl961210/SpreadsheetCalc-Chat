@@ -35,7 +35,7 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
   });
 
   function getUserLogin() {
-    return <div>
+    return <div className='login-input-button'>
       <input
         type="text"
         placeholder="User name"
@@ -125,22 +125,22 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
   }
 
   function getLoginPanel() {
-    return <div>
-      <h5>Login Page</h5>
+    return <>
+        <h1>Login</h1>
       {getUserLogin()}
-    </div>
+    </>
   }
 
   function loginPage() {
 
     if (userName === "") {
-      return <div>
+      return <>
         {getLoginPanel()}
-      </div>
+      </>
     } else {
-      return <div>
+      return <>
         {buildFileSelector()}
-      </div>
+      </>
     }
   }
 

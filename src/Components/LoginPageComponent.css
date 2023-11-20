@@ -11,3 +11,10 @@
     font-weight: bold;
     color: #1ab31a;
 }
+
+.login-input-button {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
