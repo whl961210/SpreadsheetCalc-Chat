@@ -27,11 +27,15 @@ function ServerSelector({ serverSelector, serverSelected }: ServerSelectorProps)
 
 
     return (
-        <div>
-            <button onClick={onButtonClick}>localhost</button>
-            <button onClick={onButtonClick}>renderhost</button>
-            current server: {serverSelected}
-        </div>
+        <>
+            <div>
+                <button onClick={onButtonClick}>localhost</button>
+                <button onClick={onButtonClick}>renderhost</button>
+            </div>
+            <div>
+                current server: {serverSelected}
+            </div>
+        </>
     )
 }
 

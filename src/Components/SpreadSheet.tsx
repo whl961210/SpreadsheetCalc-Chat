@@ -58,22 +58,6 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     return () => clearInterval(interval);
   });
 
-  function returnToLoginPage() {
-
-    // set the document name
-    spreadSheetClient.documentName = documentName;
-    // reload the page
-
-    // the href needs to be updated.   Remove /<sheetname> from the end of the URL
-    const href = window.location.href;
-    const index = href.lastIndexOf('/');
-    let newURL = href.substring(0, index);
-    newURL = newURL + "/documents";
-    window.history.pushState({}, '', newURL);
-    window.location.reload();
-
-  }
-
   function checkUserName(): boolean {
     if (userName === "") {
       alert("Please enter a user name");
@@ -191,7 +175,6 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   return (
     <div className="spreadsheet-division">
       <Status statusString={statusString} userName={userName}></Status>
-      <button onClick={returnToLoginPage}>Return to Login Page</button>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
 
       {<SheetHolder cellsValues={cells}
