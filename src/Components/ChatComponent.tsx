@@ -17,13 +17,13 @@ const chatClient = new ChatClient();
 function ChatComponent() {
     const [messages, setMessages] = useState<MessageContainer[]>([]);
     const [mostRecentId, setMostRecentId] = useState<number>(0);
-    const [localUser, setLocalUser] = useState(window.sessionStorage.getItem('userName') || "");
     const [message, setMessage] = useState<string>("");
+    const [action, setAction] = useState<string>("none");
+    const [target, setTarget] = useState<string>("all");
     const bottomRef = useRef(null);
 
 
     const user = window.sessionStorage.getItem('userName');
-    let localMessage = message;
     const updateDisplay = useCallback(() => {
         let updateNeeded = false;
         const newLastId = chatClient.messages[0].id;
@@ -73,18 +73,24 @@ function ChatComponent() {
                 {makeFormatedMessages()}
             </div>
             <div className="submission-div">
-              <input
-                  style={{width: "20%"}}
-                  type="text"
-                  id="user"
-                  value={localUser}
-                  onChange={(e)=>{
-                      setLocalUser(e.target.value);
-                  }}
-              />
-              <input
+              <div style={{width: "20%"}}>
+                <label>
+                  Action:
+                  <select value={action} onChange={e => setAction(e.target.value)}>
+                    <option value="none">none</option>
+                    <option value="@">@</option>
+                    <option value="DM">dm</option>
+                  </select>
+                </label>
+                <label>
+                  Target:
+                  <select value={target} onChange={e => setTarget(e.target.value)}>
+                    <option value="all">all</option>
+                  </select>
+                </label>
+              </div>
+              <textarea
                   style={{width: "60%"}}
-                  type="text"
                   id="message"
                   placeholder={"Enter message here"}
                   value={message}
@@ -93,21 +99,23 @@ function ChatComponent() {
                   }}
                   onKeyUp={(event) => {
                       if (event.key === "Enter") {
-                          chatClient.sendMessage(localUser, message);
-                          // clear the message
-                          setMessage("");
+                        if (user === null) {
+                          return;
+                        }
+                        chatClient.sendMessage(user, message);
+                        // clear the message
+                        setMessage("");
                       }
                   }}
               />
 
               <button
-                style={{width: "20%"}}
+                style={{width: "15%"}}
                 onClick={() => {
-                  if (localUser !== user) {
-                      alert(`You must use your real user name: ${user}!`);
-                      return;
+                  if (user === null) {
+                    return;
                   }
-                  chatClient.sendMessage(localUser, message)
+                  chatClient.sendMessage(user, message)
                   setMessage("")
                   }}>Send</button>
             </div>
