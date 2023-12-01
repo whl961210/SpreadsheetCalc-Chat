@@ -22,6 +22,7 @@ function ChatComponent() {
     const [target, setTarget] = useState<string>("all");
     const [users, setUsers] = useState<string[]>([]);
     const bottomRef = useRef(null);
+    const [lastMessageId, setLastMessageId] = useState<number>(-1);
 
 
     const user = window.sessionStorage.getItem('userName');
@@ -46,6 +47,7 @@ function ChatComponent() {
         setMessages(newMessages);
         setUsers(newUsers);
         setMostRecentId(newLastId);
+
     }, [mostRecentId, messages]);
 
     useEffect(() => {
@@ -55,15 +57,17 @@ function ChatComponent() {
     useEffect(() => {
         //scroll to bottom
         if (bottomRef.current !== null) {
-            // @ts-ignore
-            bottomRef.current.scrollIntoView({ behavior: "smooth" });
+          // @ts-ignore
+          bottomRef.current.scrollIntoView({ behavior: "smooth" });
         }
-    }, [bottomRef]);
-
+    }, [lastMessageId]);
 
     function makeFormatedMessages() {
         let formatedMessages = [...messages].reverse().map((message, index, array) => {
             if (index === array.length - 1) { // if this is the last message
+                if (message.id !== lastMessageId) {
+                  setLastMessageId(message.id);
+                }
                 return <textarea className={(message.atTarget === user || message.atTarget === "all") ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget ? (" @ " + message.atTarget) : "") + ": " + message.message} ref={bottomRef} />
             } else {
                 return <textarea className={(message.atTarget === user || message.atTarget === "all") ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget ? (" @ " + message.atTarget) : "") + ": " + message.message} />
