@@ -52,14 +52,21 @@ function ChatComponent() {
         chatClient.setCallback(updateDisplay);
     }, [updateDisplay]);
 
+    useEffect(() => {
+        //scroll to bottom
+        if (bottomRef.current !== null) {
+            // @ts-ignore
+            bottomRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [bottomRef]);
+
 
     function makeFormatedMessages() {
         let formatedMessages = [...messages].reverse().map((message, index, array) => {
-            let isMentioned = (user === message.atTarget)
             if (index === array.length - 1) { // if this is the last message
-                return <textarea className={isMentioned ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget === "all" ? "" : (" @ " + message.atTarget)) + ": " + message.message} ref={bottomRef} />
+                return <textarea className={(message.atTarget === user || message.atTarget === "all") ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget ? (" @ " + message.atTarget) : "") + ": " + message.message} ref={bottomRef} />
             } else {
-                return <textarea className={isMentioned ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget === "all" ? "" : (" @ " + message.atTarget)) + ": " + message.message} />
+                return <textarea className={(message.atTarget === user || message.atTarget === "all") ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget ? (" @ " + message.atTarget) : "") + ": " + message.message} />
             }
         });
         return formatedMessages;
@@ -88,9 +95,8 @@ function ChatComponent() {
       }
       if (action === "@") {
         chatClient.sendMessage(user, message, target);
-        console.log("sending message to " + target);
       } else {
-        chatClient.sendMessage(user, message, "all");
+        chatClient.sendMessage(user, message, "");
       }
       setMessage("");
     }
