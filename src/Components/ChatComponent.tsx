@@ -4,6 +4,7 @@ import { MessageContainer } from "../Engine/GlobalDefinitions";
 
 import ChatClient from "../Engine/ChatClient";
 import './Styles.css'
+import './ChatComponent.css'
 import e from "express";
 
 
@@ -62,43 +63,54 @@ function ChatComponent() {
     return (
         <div className="chat-division">
             <h3>Chat</h3>
-            <button onClick={() => chatClient.getNextMessages()}>More Messages</button>
+            <button
+              style={{width: "30%"}}
+              onClick={() => chatClient.getNextMessages()}
+            >
+              More Messages
+            </button>
             <div className="scrollable-text-view">
                 {makeFormatedMessages()}
             </div>
-            <input
-                type="text"
-                id="user"
-                value={localUser}
-                onChange={(e)=>{
-                    setLocalUser(e.target.value);
-                }}
-            />
-            <input
-                type="text"
-                id="message"
-                placeholder={"Enter message here"}
-                value={message}
-                onChange={(e) => {
-                    setMessage(e.target.value);
-                }}
-                onKeyUp={(event) => {
-                    if (event.key === "Enter") {
-                        chatClient.sendMessage(localUser, message);
-                        // clear the message
-                        setMessage("");
-                    }
-                }}
-            />
+            <div className="submission-div">
+              <input
+                  style={{width: "20%"}}
+                  type="text"
+                  id="user"
+                  value={localUser}
+                  onChange={(e)=>{
+                      setLocalUser(e.target.value);
+                  }}
+              />
+              <input
+                  style={{width: "60%"}}
+                  type="text"
+                  id="message"
+                  placeholder={"Enter message here"}
+                  value={message}
+                  onChange={(e) => {
+                      setMessage(e.target.value);
+                  }}
+                  onKeyUp={(event) => {
+                      if (event.key === "Enter") {
+                          chatClient.sendMessage(localUser, message);
+                          // clear the message
+                          setMessage("");
+                      }
+                  }}
+              />
 
-            <button onClick={() => {
-                if (localUser !== user) {
-                    alert(`You must use your real user name: ${user}!`);
-                    return;
-                }
-                chatClient.sendMessage(localUser, message)
-                setMessage("")
-                }}>Send</button>
+              <button
+                style={{width: "20%"}}
+                onClick={() => {
+                  if (localUser !== user) {
+                      alert(`You must use your real user name: ${user}!`);
+                      return;
+                  }
+                  chatClient.sendMessage(localUser, message)
+                  setMessage("")
+                  }}>Send</button>
+            </div>
         </div>
     );
 }

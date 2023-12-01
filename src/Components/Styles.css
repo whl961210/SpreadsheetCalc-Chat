@@ -1,4 +1,5 @@
 .scrollable-text-view {
+    width: 100%;
     height: 400px;
     /* adjust as needed */
     overflow: auto;

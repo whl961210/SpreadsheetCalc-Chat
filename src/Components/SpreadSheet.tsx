@@ -7,6 +7,7 @@ import SheetHolder from "./SheetHolder";
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
+import "./SpreadSheet.css";
 
 
 interface SpreadSheetProps {
