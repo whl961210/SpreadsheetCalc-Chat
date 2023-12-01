@@ -86,11 +86,12 @@ app.get('/reset', (req, res) => {
 });
 
 // this should technically not be a get since it modifies the server
-app.get('/message/:user/:message', (req, res) => {
+app.get('/message/:user/:message/:atTarget', (req, res) => {
     const message = req.params.message;
     const user = req.params.user;
-    console.log(`get /message/${message}/${user}`);
-    database.addMessage(user, message);
+    const atTarget = req.params.atTarget;
+    console.log(`get /message/${message}/${user}/${atTarget}`);
+    database.addMessage(user, message, atTarget);
     const result = database.getMessages('');
     return res.json(result);
 });

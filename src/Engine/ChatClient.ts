@@ -113,11 +113,11 @@ class ChatClient {
         this.getMessages(pagingToken);
     }
 
-    sendMessage(user: string, message: string) {
+    sendMessage(user: string, message: string, atTarget: string) {
         console.log("sentMessage()");
         console.log(this.earliestMessageID);
-        const url = `${LOCAL_SERVER_URL}/message/${user}/${message}`;
-        //const url = `https://pagination-demo.onrender.com/message/${user}/${message}`
+        const url = `${LOCAL_SERVER_URL}/message/${user}/${message}/${atTarget}`;
+        //const url = `https://pagination-demo.onrender.com/message/${user}/${message}/${atTarget}`
 
         fetch(url)
             .then(response => response.json())

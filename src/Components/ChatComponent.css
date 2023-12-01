@@ -12,3 +12,11 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.general-message {
+    background-color: none;
+}
+
+.at-message {
+    background-color: bisque;
+}

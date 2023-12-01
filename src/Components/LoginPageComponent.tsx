@@ -60,6 +60,9 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
     if (userNameInput === "") {
       alert("Please enter a user name");
       return false;
+    } else if (userNameInput.toLowerCase()==="all") {
+      alert("'all' is not a valid user name");
+      return false;
     }
     return true;
   }

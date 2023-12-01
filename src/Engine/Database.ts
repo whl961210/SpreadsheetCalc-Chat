@@ -39,19 +39,22 @@ class Message implements MessageContainer {
      * */
     id: number = 0;
     /**
+     * user getting mentioned in the message
+     */
+    atTarget: string;
+
+    /**
      * Creates an instance of Message.
      * @param {string} text 
      * @param {User} user 
      * @memberof Message
      */
-
-
-    constructor(text: string, user: string, id: number) {
+    constructor(text: string, user: string, id: number, atTarget: string) {
         this.message = text;
         this.user = user;
         this.timestamp = new Date();
         this.id = id;
-
+        this.atTarget = atTarget;
     }
 }
 
@@ -91,9 +94,9 @@ class Database {
      * @param {Message} message 
      * @memberof Database
      */
-    addMessage(user: string, message: string) {
+    addMessage(user: string, message: string, atTarget: string) {
         // prepend the message to the array
-        this.messages.unshift(new Message(message, user, this.messageCount++));
+        this.messages.unshift(new Message(message, user, this.messageCount++, atTarget));
     }
 
     // get all messages  this is for testing only, do not use in production

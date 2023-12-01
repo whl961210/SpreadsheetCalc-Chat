@@ -20,6 +20,7 @@ function ChatComponent() {
     const [message, setMessage] = useState<string>("");
     const [action, setAction] = useState<string>("none");
     const [target, setTarget] = useState<string>("all");
+    const [users, setUsers] = useState<string[]>([]);
     const bottomRef = useRef(null);
 
 
@@ -40,7 +41,10 @@ function ChatComponent() {
 
         let newMessages = [...chatClient.messages];
 
+        let newUsers = [...newMessages].map(message => message.user);
+
         setMessages(newMessages);
+        setUsers(newUsers);
         setMostRecentId(newLastId);
     }, [mostRecentId, messages]);
 
@@ -51,13 +55,44 @@ function ChatComponent() {
 
     function makeFormatedMessages() {
         let formatedMessages = [...messages].reverse().map((message, index, array) => {
+            let isMentioned = (user === message.atTarget)
             if (index === array.length - 1) { // if this is the last message
-                return <textarea key={index} readOnly value={message.id + "]" + message.user + ": " + message.message} ref={bottomRef} />
+                return <textarea className={isMentioned ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget === "all" ? "" : (" @ " + message.atTarget)) + ": " + message.message} ref={bottomRef} />
             } else {
-                return <textarea key={index} readOnly value={message.id + "]" + message.user + ": " + message.message} />
+                return <textarea className={isMentioned ? "at-message" : "general-message"} key={index} readOnly value={message.id + "]" + message.user + (message.atTarget === "all" ? "" : (" @ " + message.atTarget)) + ": " + message.message} />
             }
         });
         return formatedMessages;
+    }
+
+    function makeUserList() {
+      let noDupUsers = new Set<string>();
+
+      [...users].forEach((user) => {
+        noDupUsers.add(user);
+      });
+
+      let userList = [...noDupUsers].map((user) => {
+        if (user !== window.sessionStorage.getItem('userName')) {
+          return <option key={user} value={user}>{user}</option>
+        } else {
+          return null;
+        }
+      });
+      return userList;
+    }
+
+    function sendMessage() {
+      if (user === null) {
+        return;
+      }
+      if (action === "@") {
+        chatClient.sendMessage(user, message, target);
+        console.log("sending message to " + target);
+      } else {
+        chatClient.sendMessage(user, message, "all");
+      }
+      setMessage("");
     }
 
     return (
@@ -75,7 +110,7 @@ function ChatComponent() {
             <div className="submission-div">
               <div style={{width: "20%"}}>
                 <label>
-                  Action:
+                  action:
                   <select value={action} onChange={e => setAction(e.target.value)}>
                     <option value="none">none</option>
                     <option value="@">@</option>
@@ -83,9 +118,10 @@ function ChatComponent() {
                   </select>
                 </label>
                 <label>
-                  Target:
+                  target:
                   <select value={target} onChange={e => setTarget(e.target.value)}>
                     <option value="all">all</option>
+                    {makeUserList()}
                   </select>
                 </label>
               </div>
@@ -99,12 +135,7 @@ function ChatComponent() {
                   }}
                   onKeyUp={(event) => {
                       if (event.key === "Enter") {
-                        if (user === null) {
-                          return;
-                        }
-                        chatClient.sendMessage(user, message);
-                        // clear the message
-                        setMessage("");
+                        sendMessage();
                       }
                   }}
               />
@@ -112,11 +143,7 @@ function ChatComponent() {
               <button
                 style={{width: "15%"}}
                 onClick={() => {
-                  if (user === null) {
-                    return;
-                  }
-                  chatClient.sendMessage(user, message)
-                  setMessage("")
+                  sendMessage();
                   }}>Send</button>
             </div>
         </div>
