@@ -88,9 +88,9 @@ app.get('/reset', (req, res) => {
 // this should technically not be a get since it modifies the server
 app.post('/message/:user', (req, res) => {
     const user = req.params.user;
-    const { message, atTarget } = req.body;
-    console.log(`get /message/${message}/${user}/${atTarget}`);
-    const isBlocked = database.addMessage(user, message, atTarget);
+    const { message, atTarget, dmTarget } = req.body;
+    console.log(`post /message/${message}/${user}/${atTarget}`);
+    const isBlocked = database.addMessage(user, message, atTarget, dmTarget);
     if (isBlocked) {
         return res.status(403).json({ message: 'message blocked by the target user' });
     }

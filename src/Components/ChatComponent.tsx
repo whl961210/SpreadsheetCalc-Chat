@@ -13,7 +13,7 @@ function ChatComponent() {
   const [messages, setMessages] = useState<MessageContainer[]>([]);
   const [mostRecentId, setMostRecentId] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
-  const [action, setAction] = useState<string>("none");
+  const [action, setAction] = useState<string>("");
   const [target, setTarget] = useState<string>("all");
   const [users, setUsers] = useState<string[]>([]);
   const bottomRef = useRef(null);
@@ -21,6 +21,8 @@ function ChatComponent() {
   const [blockList, setBlockList] = useState<string[]>([]);
   const [blockListRefresher, setBlockListRefresher] = useState<boolean>(false);
   const [selectedBlockedUser, setSelectedBlockedUser] = useState<string>("");
+  const [isTargetOptionVisible, setIsTargetOptionVisible] =
+    useState<boolean>(false);
 
   const user = window.sessionStorage.getItem("userName");
   const updateDisplay = useCallback(() => {
@@ -91,26 +93,28 @@ function ChatComponent() {
           }
           return (
             <div style={{ position: "relative" }} key={index}>
-              {message.user!==user && <button
-                style={{ position: "absolute", right: "5px", top: "5px" }}
-                onClick={() => {
-                  blockUser(message.user);
-                }}
-              >
-                block
-              </button>}
+              {message.user !== user && (
+                <button
+                  style={{ position: "absolute", right: "5px", top: "5px" }}
+                  onClick={() => {
+                    blockUser(message.user);
+                  }}
+                >
+                  block
+                </button>
+              )}
               <textarea
                 className={
                   message.atTarget === user || message.atTarget === "all"
                     ? "at-message"
-                    : "general-message"
+                    : ((message.dmTarget === user || (message.dmTarget && message.user === user)) ? "direct-message" : "general-message")
                 }
                 readOnly
                 value={
                   message.id +
                   "]" +
                   message.user +
-                  (message.atTarget ? " @ " + message.atTarget : "") +
+                  (message.atTarget ? " @ " + message.atTarget : (message.dmTarget ? " to " + message.dmTarget : "")) +
                   ": " +
                   message.message
                 }
@@ -121,26 +125,28 @@ function ChatComponent() {
         } else {
           return (
             <div style={{ position: "relative" }} key={index}>
-              {message.user!==user && <button
-                style={{ position: "absolute", right: "5px", top: "5px" }}
-                onClick={() => {
-                  blockUser(message.user);
-                }}
-              >
-                block
-              </button>}
+              {message.user !== user && (
+                <button
+                  style={{ position: "absolute", right: "5px", top: "5px" }}
+                  onClick={() => {
+                    blockUser(message.user);
+                  }}
+                >
+                  block
+                </button>
+              )}
               <textarea
                 className={
                   message.atTarget === user || message.atTarget === "all"
                     ? "at-message"
-                    : "general-message"
+                    : ((message.dmTarget === user || (message.dmTarget && message.user === user)) ? "direct-message" : "general-message")
                 }
                 readOnly
                 value={
                   message.id +
                   "]" +
                   message.user +
-                  (message.atTarget ? " @ " + message.atTarget : "") +
+                  (message.atTarget ? " @ " + message.atTarget : (message.dmTarget ? " to " + message.dmTarget : "")) +
                   ": " +
                   message.message
                 }
@@ -187,17 +193,32 @@ function ChatComponent() {
     if (user === null) {
       return;
     }
+    if (message === "") {
+      alert("Empty message is not allowed.");
+      return;
+    }
     if (action === "@") {
-      chatClient.sendMessage(user, message, target);
+      chatClient.sendMessage(user, message, target, "");
+    } else if (action === "DM") {
+      if (target === "all") {
+        alert(
+          "You can not send Direct Message to everyone. Please select a target user."
+        );
+        return;
+      }
+      chatClient.sendMessage(user, message, "", target);
     } else {
-      chatClient.sendMessage(user, message, "");
+      chatClient.sendMessage(user, message, "", "");
     }
     setMessage("");
   }
 
-  function blockUser(target: string) {
+  function blockUser(blockTarget: string) {
     if (user === null) {
       return;
+    }
+    if (blockTarget === target) {
+      setTarget("all");
     }
     chatClient.blockUser(user, target);
     setBlockListRefresher(!blockListRefresher);
@@ -222,25 +243,42 @@ function ChatComponent() {
       </button>
       <div className="scrollable-text-view">{makeFormatedMessages()}</div>
       <div className="submission-div">
-        <div style={{ width: "20%" }}>
+        <div style={{ width: "25%" }}>
           <label>
             action:
-            <select value={action} onChange={(e) => setAction(e.target.value)}>
-              <option value="">none</option>
+            <select
+              value={action}
+              onChange={(e) => {
+                setAction(e.target.value);
+
+                if (e.target.value === "") {
+                  setIsTargetOptionVisible(false);
+                  setTarget("all");
+                } else {
+                  setIsTargetOptionVisible(true);
+                }
+              }}
+            >
+              <option value="">---optional---</option>
               <option value="@">@</option>
-              <option value="DM">dm</option>
+              <option value="DM">Direct Message</option>
             </select>
           </label>
-          <label>
-            target:
-            <select value={target} onChange={(e) => setTarget(e.target.value)}>
-              <option value="all">all</option>
-              {makeUserList()}
-            </select>
-          </label>
+          {isTargetOptionVisible && (
+            <label>
+              target:
+              <select
+                value={target}
+                onChange={(e) => setTarget(e.target.value)}
+              >
+                <option value="all">all</option>
+                {makeUserList()}
+              </select>
+            </label>
+          )}
         </div>
         <textarea
-          style={{ width: "60%" }}
+          style={{ width: "55%" }}
           id="message"
           placeholder={"Enter message here"}
           value={message}

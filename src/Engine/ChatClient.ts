@@ -199,7 +199,7 @@ class ChatClient {
     this.getMessages(pagingToken);
   }
 
-  sendMessage(user: string, message: string, atTarget: string) {
+  sendMessage(user: string, message: string, atTarget: string, dmTarget: string) {
     console.log("sentMessage()");
     console.log(this.earliestMessageID);
     const url = `${LOCAL_SERVER_URL}/message/${user}`;
@@ -210,11 +210,11 @@ class ChatClient {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message: message, atTarget: atTarget }),
+      body: JSON.stringify({ message: message, atTarget: atTarget, dmTarget: dmTarget }),
     })
       .then((response) => {
         if (response.status === 403) {
-          const alertMessage = `You are blocked by ${atTarget}!`;
+          const alertMessage = `You are blocked by ${atTarget ? atTarget : dmTarget}!`;
           throw new Error(alertMessage);
         }
         return response.json()
