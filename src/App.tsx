@@ -104,7 +104,7 @@ function App() {
           <>
             <div className='welcome-header'>
                 Current User: {window.sessionStorage.getItem('userName')}
-                <button style={{margin: "0px 10px"}} onClick={returnToLoginPage}>Return to Login Page</button>
+                <button style={{margin: "0px 10px"}} onClick={returnToLoginPage}>Return to File Selection Page</button>
             </div>
             <div className='sheet-page-container'>
               <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient} />
