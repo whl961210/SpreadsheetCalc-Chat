@@ -73,6 +73,7 @@ function ChatComponent() {
 
   useEffect(() => {
     chatClient.fetchBlockList(user || "");
+    chatClient.setUser(user || "");
   }, [user]);
 
   useEffect(() => {

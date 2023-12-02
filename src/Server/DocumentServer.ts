@@ -91,7 +91,7 @@ app.post('/message/:user', (req, res) => {
     const { message, atTarget } = req.body;
     console.log(`get /message/${message}/${user}/${atTarget}`);
     database.addMessage(user, message, atTarget);
-    const result = database.getMessages('');
+    const result = database.getMessages('', user);
     return res.json(result);
 });
 
@@ -101,7 +101,7 @@ app.get('/ping', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    const result = database.getMessages('');
+    const result = database.getMessages('', '');
     console.log('get /');
     return res.json(result);
 });
@@ -138,12 +138,13 @@ app.delete('/blocklist/remove', (req, res) => {
     return res.json(result);
 });
 
-app.get('/messages/get/:pagingToken?', (req, res) => {
+app.put('/messages/get/:pagingToken?', (req, res) => {
     // if there is no :pagingToken, then it will be an empty string
 
     let pagingToken = req.params.pagingToken || '';
+    const { user } = req.body;
 
-    const result = database.getMessages(pagingToken);
+    const result = database.getMessages(pagingToken, user);
     console.log(`get /messages/get/${pagingToken}`);
     return res.json(result);
 });

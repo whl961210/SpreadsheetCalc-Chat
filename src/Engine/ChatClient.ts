@@ -22,6 +22,8 @@ class ChatClient {
   messages: MessageContainer[] = [];
   blockList: string[] = [];
 
+  user: string = "";
+
   updateDisplay: () => void = () => {};
   updateBlockList: () => void = () => {};
   /**
@@ -32,6 +34,16 @@ class ChatClient {
     console.log("ChatClient");
     this.getMessages();
     this.getMessagesContinuously();
+  }
+
+  setUser(user: string) {
+    this.user = user;
+  }
+
+  resetMessages() {
+    this.messages = [];
+    this.earliestMessageID = 10000000000;
+    this.previousMessagesFetched = false;
   }
 
   setCallback(callback: () => void) {
@@ -49,6 +61,7 @@ class ChatClient {
       .then((response) => response.json())
       .then((blockList: string[]) => {
         this.blockList = blockList;
+        this.resetMessages();
         this.updateBlockList();
       })
       .catch((error) => {
@@ -63,13 +76,15 @@ class ChatClient {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user: user, userToBlock: userToBlock }),
-      })
+      },
+      body: JSON.stringify({ user: user, userToBlock: userToBlock }),
+    })
       .then((response) => response.json())
       .then((blockList: string[]) => {
         this.blockList = blockList;
+        this.resetMessages();
         this.updateBlockList();
+        this.updateDisplay();
       })
       .catch((error) => {
         console.error(error);
@@ -83,13 +98,15 @@ class ChatClient {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user: user, userToUnblock: userToUnblock }),
-      })
+      },
+      body: JSON.stringify({ user: user, userToUnblock: userToUnblock }),
+    })
       .then((response) => response.json())
       .then((blockList: string[]) => {
         this.blockList = blockList;
+        this.resetMessages();
         this.updateBlockList();
+        this.updateDisplay();
       })
       .catch((error) => {
         console.error(error);
@@ -145,7 +162,13 @@ class ChatClient {
     //const url = `https://pagination-demo.onrender.com/messages/get`
 
     const fetchURL = `${url}${pagingToken}`;
-    fetch(fetchURL)
+    fetch(fetchURL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user: this.user }),
+    })
       .then((response) => response.json())
       .then((messagesContainer: MessagesContainer) => {
         let messages = messagesContainer.messages;
