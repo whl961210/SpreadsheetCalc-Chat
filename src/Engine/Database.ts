@@ -70,6 +70,7 @@ class Database {
      */
     private messages: Message[] = [];
     private messageCount: number = 0;
+    private blockLists: Map<string, string[]> = new Map<string, string[]>();
 
 
 
@@ -81,11 +82,60 @@ class Database {
     constructor() {
         this.messages = [];
         this.messageCount = 0;
+        this.blockLists = new Map<string, string[]>();
     }
 
     reset() {
         this.messages = [];
         this.messageCount = 0;
+        this.blockLists = new Map<string, string[]>();
+    }  
+
+    // get a user's block list
+    getBlockList(user: string): string[] {
+        if (!user) {
+            return [];
+        }
+         else if (!this.blockLists.has(user)) {
+            return [];
+        } else {
+            const blockList = this.blockLists.get(user);
+            if (blockList) {
+                return blockList;
+            } else {
+                return [];
+            }
+        }
+    }
+
+    // add a user to another user's block list
+    blockUser(user: string, userToBlock: string) {
+        if (!this.blockLists.has(user)) {
+            this.blockLists.set(user, [userToBlock]);
+        } else {
+            const blockList = this.blockLists.get(user);
+            if (blockList) {
+                const index = blockList.indexOf(userToBlock);
+                if (index === -1) {
+                    blockList.push(userToBlock);
+                }
+            }
+        }
+    }
+
+    // remove a user from another user's block list
+    unblockUser(user: string, userToUnblock: string) {
+        if (!this.blockLists.has(user)) {
+            return;
+        } else {
+            const blockList = this.blockLists.get(user);
+            if (blockList) {
+                const index = blockList.indexOf(userToUnblock);
+                if (index !== -1) {
+                    blockList.splice(index, 1);
+                }
+            }
+        }
     }
 
     /**

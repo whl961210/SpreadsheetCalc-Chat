@@ -112,6 +112,31 @@ app.get('/messages/getall', (req, res) => {
     return res.json(result);
 });
 
+// get a user's block list
+app.get('/blocklist/get/:user', (req, res) => {
+    const user = req.params.user || '';
+    const result = database.getBlockList(user);
+    console.log(`get /blocklist/get/${user}`);
+    return res.json(result);
+});
+
+// add a user to another user's block list
+app.post('/blocklist/add', (req, res) => {
+    const { user, userToBlock } = req.body;
+    database.blockUser(user, userToBlock);
+    console.log(`post /blocklist/add/${user}/${userToBlock}`);
+    const result = database.getBlockList(user);
+    return res.json(result);
+});
+
+// remove a user from another user's block list
+app.delete('/blocklist/remove', (req, res) => {
+    const { user, userToUnblock } = req.body;
+    database.unblockUser(user, userToUnblock);
+    console.log(`post /blocklist/remove/${user}/${userToUnblock}`);
+    const result = database.getBlockList(user);
+    return res.json(result);
+});
 
 app.get('/messages/get/:pagingToken?', (req, res) => {
     // if there is no :pagingToken, then it will be an empty string

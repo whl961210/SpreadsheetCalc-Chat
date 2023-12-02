@@ -20,8 +20,10 @@ class ChatClient {
   previousMessagesFetched: boolean = false;
 
   messages: MessageContainer[] = [];
+  blockList: string[] = [];
 
   updateDisplay: () => void = () => {};
+  updateBlockList: () => void = () => {};
   /**
    * Creates an instance of ChatClient.
    * @memberof ChatClient
@@ -34,6 +36,64 @@ class ChatClient {
 
   setCallback(callback: () => void) {
     this.updateDisplay = callback;
+  }
+
+  setBlockListCallback(callback: () => void) {
+    this.updateBlockList = callback;
+  }
+
+  //get block list from server
+  fetchBlockList(user: string) {
+    const url = `${LOCAL_SERVER_URL}/blocklist/get/${user}`;
+    fetch(url)
+      .then((response) => response.json())
+      .then((blockList: string[]) => {
+        this.blockList = blockList;
+        this.updateBlockList();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // add a user to the block list
+  blockUser(user: string, userToBlock: string) {
+    const url = `${LOCAL_SERVER_URL}/blocklist/add`;
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user: user, userToBlock: userToBlock }),
+      })
+      .then((response) => response.json())
+      .then((blockList: string[]) => {
+        this.blockList = blockList;
+        this.updateBlockList();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // remove a user from the block list
+  unblockUser(user: string, userToUnblock: string) {
+    const url = `${LOCAL_SERVER_URL}/blocklist/remove`;
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user: user, userToUnblock: userToUnblock }),
+      })
+      .then((response) => response.json())
+      .then((blockList: string[]) => {
+        this.blockList = blockList;
+        this.updateBlockList();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   insertMessage(message: MessageContainer) {

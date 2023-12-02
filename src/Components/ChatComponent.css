@@ -14,9 +14,11 @@
 }
 
 .general-message {
+    width: 100%;
     background-color: none;
 }
 
 .at-message {
+    width: 100%;
     background-color: bisque;
 }
