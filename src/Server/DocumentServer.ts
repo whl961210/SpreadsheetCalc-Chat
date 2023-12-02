@@ -90,7 +90,11 @@ app.post('/message/:user', (req, res) => {
     const user = req.params.user;
     const { message, atTarget } = req.body;
     console.log(`get /message/${message}/${user}/${atTarget}`);
-    database.addMessage(user, message, atTarget);
+    const isBlocked = database.addMessage(user, message, atTarget);
+    if (isBlocked) {
+        return res.status(403).json({ message: 'message blocked by the target user' });
+    }
+
     const result = database.getMessages('', user);
     return res.json(result);
 });

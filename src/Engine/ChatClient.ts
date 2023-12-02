@@ -212,13 +212,21 @@ class ChatClient {
       },
       body: JSON.stringify({ message: message, atTarget: atTarget }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 403) {
+          const alertMessage = `You are blocked by ${atTarget}!`;
+          throw new Error(alertMessage);
+        }
+        return response.json()
+      })
       .then((messagesContainer: MessagesContainer) => {
         let messages = messagesContainer.messages;
+        console.log("got messages", messages);
         this.insertMessages(messages);
       })
       .catch((error) => {
         console.error(error);
+        alert(error);
       });
   }
 }

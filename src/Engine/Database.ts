@@ -144,9 +144,16 @@ class Database {
      * @param {Message} message 
      * @memberof Database
      */
-    addMessage(user: string, message: string, atTarget: string) {
+    addMessage(user: string, message: string, atTarget: string): boolean {
+        let isBlocked = false;
+        const targetUserBlockList = this.getBlockList(atTarget);
+        if (atTarget && targetUserBlockList.length !== 0 && targetUserBlockList.indexOf(user) !== -1) {
+            isBlocked = true;
+            return isBlocked;
+        }
         // prepend the message to the array
         this.messages.unshift(new Message(message, user, this.messageCount++, atTarget));
+        return isBlocked;
     }
 
     // get all messages  this is for testing only, do not use in production
