@@ -107,14 +107,21 @@ function ChatComponent() {
                 className={
                   message.atTarget === user || message.atTarget === "all"
                     ? "at-message"
-                    : ((message.dmTarget === user || (message.dmTarget && message.user === user)) ? "direct-message" : "general-message")
+                    : message.dmTarget === user ||
+                      (message.dmTarget && message.user === user)
+                    ? "direct-message"
+                    : "general-message"
                 }
                 readOnly
                 value={
                   message.id +
                   "]" +
                   message.user +
-                  (message.atTarget ? " @ " + message.atTarget : (message.dmTarget ? " to " + message.dmTarget : "")) +
+                  (message.atTarget
+                    ? " @ " + message.atTarget
+                    : message.dmTarget
+                    ? " to " + message.dmTarget
+                    : "") +
                   ": " +
                   message.message
                 }
@@ -139,14 +146,21 @@ function ChatComponent() {
                 className={
                   message.atTarget === user || message.atTarget === "all"
                     ? "at-message"
-                    : ((message.dmTarget === user || (message.dmTarget && message.user === user)) ? "direct-message" : "general-message")
+                    : message.dmTarget === user ||
+                      (message.dmTarget && message.user === user)
+                    ? "direct-message"
+                    : "general-message"
                 }
                 readOnly
                 value={
                   message.id +
                   "]" +
                   message.user +
-                  (message.atTarget ? " @ " + message.atTarget : (message.dmTarget ? " to " + message.dmTarget : "")) +
+                  (message.atTarget
+                    ? " @ " + message.atTarget
+                    : message.dmTarget
+                    ? " to " + message.dmTarget
+                    : "") +
                   ": " +
                   message.message
                 }
@@ -244,37 +258,38 @@ function ChatComponent() {
       <div className="scrollable-text-view">{makeFormatedMessages()}</div>
       <div className="submission-div">
         <div style={{ width: "25%" }}>
-          <label>
-            action:
-            <select
-              value={action}
-              onChange={(e) => {
-                setAction(e.target.value);
+          <label>action:</label>
+          <select
+            style={{ width: "100%" }}
+            value={action}
+            onChange={(e) => {
+              setAction(e.target.value);
 
-                if (e.target.value === "") {
-                  setIsTargetOptionVisible(false);
-                  setTarget("all");
-                } else {
-                  setIsTargetOptionVisible(true);
-                }
-              }}
-            >
-              <option value="">---optional---</option>
-              <option value="@">@</option>
-              <option value="DM">Direct Message</option>
-            </select>
-          </label>
+              if (e.target.value === "") {
+                setIsTargetOptionVisible(false);
+                setTarget("all");
+              } else {
+                setIsTargetOptionVisible(true);
+              }
+            }}
+          >
+            <option value="">---optional---</option>
+            <option value="@">@</option>
+            <option value="DM">Direct Message</option>
+          </select>
+
           {isTargetOptionVisible && (
-            <label>
-              target:
+            <>
+              <label>target:</label>
               <select
+                style={{ width: "100%" }}
                 value={target}
                 onChange={(e) => setTarget(e.target.value)}
               >
                 <option value="all">all</option>
                 {makeUserList()}
               </select>
-            </label>
+            </>
           )}
         </div>
         <textarea
@@ -301,7 +316,7 @@ function ChatComponent() {
           Send
         </button>
       </div>
-      <div>
+      <div className="block-list-div">
         <select
           value={selectedBlockedUser}
           onChange={(e) => setSelectedBlockedUser(e.target.value)}
