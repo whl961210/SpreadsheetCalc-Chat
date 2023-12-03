@@ -24,7 +24,7 @@ class SpreadSheetClient {
 
 
     private _serverPort: number = PortsGlobal.serverPort;
-    private _baseURL: string = `${LOCAL_SERVER_URL}:${this._serverPort}`;
+    private _baseURL: string = `${RENDER_SERVER_URL}:${this._serverPort}`;
     private _userName: string = '';
     private _documentName: string = '';
     private _document: DocumentTransport;
@@ -475,9 +475,9 @@ class SpreadSheetClient {
             return;
         }
         if (server === 'localhost') {
-            this._baseURL = `${LOCAL_SERVER_URL}:${this._serverPort}`;
+            this._baseURL = `${RENDER_SERVER_URL}:${this._serverPort}`;
         } else {
-            this._baseURL = LOCAL_SERVER_URL;
+            this._baseURL = RENDER_SERVER_URL;
         }
 
         this.getDocument(this._documentName, this._userName);

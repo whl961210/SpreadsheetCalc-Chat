@@ -56,7 +56,7 @@ class ChatClient {
 
   //get block list from server
   fetchBlockList(user: string) {
-    const url = `${LOCAL_SERVER_URL}/blocklist/get/${user}`;
+    const url = `${RENDER_SERVER_URL}/blocklist/get/${user}`;
     fetch(url)
       .then((response) => response.json())
       .then((blockList: string[]) => {
@@ -71,7 +71,7 @@ class ChatClient {
 
   // add a user to the block list
   blockUser(user: string, userToBlock: string) {
-    const url = `${LOCAL_SERVER_URL}/blocklist/add`;
+    const url = `${RENDER_SERVER_URL}/blocklist/add`;
     fetch(url, {
       method: "POST",
       headers: {
@@ -93,7 +93,7 @@ class ChatClient {
 
   // remove a user from the block list
   unblockUser(user: string, userToUnblock: string) {
-    const url = `${LOCAL_SERVER_URL}/blocklist/remove`;
+    const url = `${RENDER_SERVER_URL}/blocklist/remove`;
     fetch(url, {
       method: "DELETE",
       headers: {
@@ -158,7 +158,7 @@ class ChatClient {
    * get the next 10 messages from the server if the paging token is not empty
    */
   getMessages(pagingToken: string = "") {
-    const url = `${LOCAL_SERVER_URL}/messages/get/`;
+    const url = `${RENDER_SERVER_URL}/messages/get/`;
     //const url = `https://pagination-demo.onrender.com/messages/get`
 
     const fetchURL = `${url}${pagingToken}`;
@@ -202,7 +202,7 @@ class ChatClient {
   sendMessage(user: string, message: string, atTarget: string, dmTarget: string) {
     console.log("sentMessage()");
     console.log(this.earliestMessageID);
-    const url = `${LOCAL_SERVER_URL}/message/${user}`;
+    const url = `${RENDER_SERVER_URL}/message/${user}`;
     //const url = `https://pagination-demo.onrender.com/message/${user}/${message}/${atTarget}`
 
     fetch(url, {
