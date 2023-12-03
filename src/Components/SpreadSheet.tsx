@@ -184,7 +184,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       <KeyPad onButtonClick={onButtonClick}
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
-      <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+      {/* <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} /> */}
     </div>
   )
 };
