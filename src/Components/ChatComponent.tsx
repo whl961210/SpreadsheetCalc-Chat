@@ -231,7 +231,7 @@ function ChatComponent() {
     if (user === null) {
       return;
     }
-    chatClient.blockUser(user, target);
+    chatClient.blockUser(user, blockTarget);
     if (blockTarget === target) {
       setTarget("all");
     }
