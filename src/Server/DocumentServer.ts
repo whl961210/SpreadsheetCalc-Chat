@@ -86,12 +86,16 @@ app.get('/reset', (req, res) => {
 });
 
 // this should technically not be a get since it modifies the server
-app.get('/message/:user/:message', (req, res) => {
-    const message = req.params.message;
+app.post('/message/:user', (req, res) => {
     const user = req.params.user;
-    console.log(`get /message/${message}/${user}`);
-    database.addMessage(user, message);
-    const result = database.getMessages('');
+    const { message, atTarget, dmTarget } = req.body;
+    console.log(`post /message/${message}/${user}/${atTarget}`);
+    const isBlocked = database.addMessage(user, message, atTarget, dmTarget);
+    if (isBlocked) {
+        return res.status(403).json({ message: 'message blocked by the target user' });
+    }
+
+    const result = database.getMessages('', user);
     return res.json(result);
 });
 
@@ -101,7 +105,7 @@ app.get('/ping', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    const result = database.getMessages('');
+    const result = database.getMessages('', '');
     console.log('get /');
     return res.json(result);
 });
@@ -112,13 +116,39 @@ app.get('/messages/getall', (req, res) => {
     return res.json(result);
 });
 
+// get a user's block list
+app.get('/blocklist/get/:user', (req, res) => {
+    const user = req.params.user || '';
+    const result = database.getBlockList(user);
+    console.log(`get /blocklist/get/${user}`);
+    return res.json(result);
+});
 
-app.get('/messages/get/:pagingToken?', (req, res) => {
+// add a user to another user's block list
+app.post('/blocklist/add', (req, res) => {
+    const { user, userToBlock } = req.body;
+    database.blockUser(user, userToBlock);
+    console.log(`post /blocklist/add/${user}/${userToBlock}`);
+    const result = database.getBlockList(user);
+    return res.json(result);
+});
+
+// remove a user from another user's block list
+app.delete('/blocklist/remove', (req, res) => {
+    const { user, userToUnblock } = req.body;
+    database.unblockUser(user, userToUnblock);
+    console.log(`post /blocklist/remove/${user}/${userToUnblock}`);
+    const result = database.getBlockList(user);
+    return res.json(result);
+});
+
+app.put('/messages/get/:pagingToken?', (req, res) => {
     // if there is no :pagingToken, then it will be an empty string
 
     let pagingToken = req.params.pagingToken || '';
+    const { user } = req.body;
 
-    const result = database.getMessages(pagingToken);
+    const result = database.getMessages(pagingToken, user);
     console.log(`get /messages/get/${pagingToken}`);
     return res.json(result);
 });

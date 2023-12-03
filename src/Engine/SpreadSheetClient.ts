@@ -475,7 +475,7 @@ class SpreadSheetClient {
             return;
         }
         if (server === 'localhost') {
-            this._baseURL = `${LOCAL_SERVER_URL}:${this._serverPort}`;
+            this._baseURL = `${RENDER_SERVER_URL}:${this._serverPort}`;
         } else {
             this._baseURL = RENDER_SERVER_URL;
         }

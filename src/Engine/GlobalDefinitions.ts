@@ -54,7 +54,9 @@ export interface MessageContainer {
   user: string,
   message: string,
   timestamp: Date,
-  id: number
+  id: number,
+  atTarget: string,
+  dmTarget: string
 }
 
 export interface MessagesContainer {

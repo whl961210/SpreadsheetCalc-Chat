@@ -7,6 +7,7 @@ import SheetHolder from "./SheetHolder";
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
+import "./SpreadSheet.css";
 
 
 interface SpreadSheetProps {
@@ -56,22 +57,6 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     }, 50);
     return () => clearInterval(interval);
   });
-
-  function returnToLoginPage() {
-
-    // set the document name
-    spreadSheetClient.documentName = documentName;
-    // reload the page
-
-    // the href needs to be updated.   Remove /<sheetname> from the end of the URL
-    const href = window.location.href;
-    const index = href.lastIndexOf('/');
-    let newURL = href.substring(0, index);
-    newURL = newURL + "/documents";
-    window.history.pushState({}, '', newURL);
-    window.location.reload();
-
-  }
 
   function checkUserName(): boolean {
     if (userName === "") {
@@ -190,7 +175,6 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   return (
     <div className="spreadsheet-division">
       <Status statusString={statusString} userName={userName}></Status>
-      <button onClick={returnToLoginPage}>Return to Login Page</button>
       <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
 
       {<SheetHolder cellsValues={cells}
@@ -200,7 +184,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       <KeyPad onButtonClick={onButtonClick}
         onCommandButtonClick={onCommandButtonClick}
         currentlyEditing={currentlyEditing}></KeyPad>
-      <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+      {/* <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} /> */}
     </div>
   )
 };

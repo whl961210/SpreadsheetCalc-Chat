@@ -50,6 +50,22 @@ function App() {
 
   }
 
+  function returnToLoginPage() {
+
+    // set the document name
+    spreadSheetClient.documentName = documentName;
+    // reload the page
+
+    // the href needs to be updated.   Remove /<sheetname> from the end of the URL
+    const href = window.location.href;
+    const index = href.lastIndexOf('/');
+    let newURL = href.substring(0, index);
+    newURL = newURL + "/documents";
+    window.history.pushState({}, '', newURL);
+    window.location.reload();
+
+  }
+
   //callback function to reset the current URL to have the document name
   function resetURL(documentName: string) {
     // get the current URL
@@ -85,10 +101,16 @@ function App() {
         {documentName === 'documents' ? (
           <LoginPageComponent spreadSheetClient={spreadSheetClient} />
         ) : (
-          <div className='sheet-page-container'>
-            <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient} />
-            <ChatComponent />
-          </div>
+          <>
+            <div className='welcome-header'>
+                Current User: {window.sessionStorage.getItem('userName')}
+                <button style={{margin: "0px 10px"}} onClick={returnToLoginPage}>Return to File Selection Page</button>
+            </div>
+            <div className='sheet-page-container'>
+              <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient} />
+              <ChatComponent />
+            </div>
+          </>
         )}
       </header>
     </div>
