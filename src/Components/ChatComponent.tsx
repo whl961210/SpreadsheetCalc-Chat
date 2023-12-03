@@ -231,10 +231,10 @@ function ChatComponent() {
     if (user === null) {
       return;
     }
+    chatClient.blockUser(user, target);
     if (blockTarget === target) {
       setTarget("all");
     }
-    chatClient.blockUser(user, target);
     setBlockListRefresher(!blockListRefresher);
   }
 
