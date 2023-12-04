@@ -23,6 +23,8 @@ function ChatComponent() {
   const [selectedBlockedUser, setSelectedBlockedUser] = useState<string>("");
   const [isTargetOptionVisible, setIsTargetOptionVisible] =
     useState<boolean>(false);
+  const [scrollHandler, setScrollHandler] = useState<boolean>(false);
+  const [needScroll, setNeedScroll] = useState<boolean>(false);
 
   const user = window.sessionStorage.getItem("userName");
   const updateDisplay = useCallback(() => {
@@ -58,6 +60,7 @@ function ChatComponent() {
 
   const blockListUpdater = useCallback(() => {
     setBlockListRefresher(!blockListRefresher);
+    setNeedScroll(true);
   }, [blockListRefresher]);
   chatClient.setBlockListCallback(blockListUpdater);
 
@@ -71,7 +74,7 @@ function ChatComponent() {
       // @ts-ignore
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [lastMessageId]);
+  }, [lastMessageId, scrollHandler]);
 
   useEffect(() => {
     chatClient.fetchBlockList(user || "");
@@ -90,6 +93,10 @@ function ChatComponent() {
           // if this is the last message
           if (message.id !== lastMessageId) {
             setLastMessageId(message.id);
+          }
+          if (needScroll) {
+            setNeedScroll(false);
+            setScrollHandler(!scrollHandler);
           }
           return (
             <div style={{ position: "relative" }} key={index}>
@@ -238,11 +245,16 @@ function ChatComponent() {
     setBlockListRefresher(!blockListRefresher);
   }
 
-  function unblockUser(target: string) {
+  function unblockUser() {
     if (user === null) {
       return;
     }
-    chatClient.unblockUser(user, target);
+    if (selectedBlockedUser === "") {
+      alert("Please select a user to unblock.");
+      return;
+    }
+    chatClient.unblockUser(user, selectedBlockedUser);
+    setSelectedBlockedUser("");
     setBlockListRefresher(!blockListRefresher);
   }
 
@@ -326,10 +338,7 @@ function ChatComponent() {
         </select>
         <button
           onClick={() => {
-            if (!selectedBlockedUser) {
-              return;
-            }
-            unblockUser(selectedBlockedUser);
+            unblockUser();
           }}
         >
           unblock
